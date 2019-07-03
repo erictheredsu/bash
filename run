@@ -1,0 +1,39 @@
+#!/bin/bash
+# put the script in /WebClient/startup/ 
+#set -x
+
+echo "copy jar"
+declare -A array_filepath 
+array_filepath[auth]='../java/auth/target/auth-10.00.000-SNAPSHOT.jar'
+array_filepath[gate]='../java/gate/target/gate-10.00.000-SNAPSHOT.jar'
+array_filepath[tcli]='../java/tcli/tcli-web/target/tcli-web-10.00.000-SNAPSHOT.jar'
+array_filepath[noti]='../java/noti/target/noti-10.00.000-SNAPSHOT.jar'
+array_filepath[extn]='../java/extn/target/extn-10.00.000-SNAPSHOT.jar'
+array_filepath[anly]='../java/anly/thin/target/analytic-thin.jar'
+
+for f in "${!array_filepath[@]}"
+do
+    if [[ -e $f.jar ]]
+    then
+        echo "$f.jar exist"
+    else
+        echo "$f.jar does not exist, copy it"
+		cp "${array_filepath[$f]}" $f.jar
+    fi
+done
+
+echo "set envirnoment var"
+export b1_svcl_url='http://10.193.84.13:50001/'
+export b1_jdbc_url='jdbc:sap://10.193.84.13:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
+
+echo "clean exist process"
+ps -ef | grep jar | awk '{print $2}' | xargs kill -9 $1
+
+echo "run component"
+java -jar auth.jar >auth.txt 2>&1 & 
+java -jar noti.jar >noti.txt 2>&1 & 
+java -jar extn.jar >extn.txt 2>&1 & 
+java -jar anly.jar >anly.txt 2>&1 & 
+java -jar gate.jar --spring.profiles.active=test >gate.txt 2>&1 &
+#java -jar tcli.jar >tcli.txt 2>&1 &
+java -jar tcli.jar
