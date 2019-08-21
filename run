@@ -2,6 +2,8 @@
 # put the script in /WebClient/startup/ 
 #set -x
 
+source ./env
+
 echo "copy jar"
 declare -A array_filepath 
 array_filepath[auth]='../java/auth/target/auth-10.00.000-SNAPSHOT.jar'
@@ -22,9 +24,7 @@ do
     fi
 done
 
-echo "set envirnoment var"
-export b1_svcl_url='http://10.193.84.13:50001/'
-export b1_jdbc_url='jdbc:sap://10.193.84.13:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
+
 
 echo "clean exist process"
 ps -ef | grep jar | awk '{print $2}' | xargs kill -9 $1

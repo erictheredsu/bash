@@ -1,0 +1,7 @@
+echo "set envirnoment var"
+export b1_svcl_url='http://10.193.84.13:50001/'
+export b1_jdbc_url='jdbc:sap://10.193.84.13:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
+
+#Jina
+#export b1_svcl_url='http://10.58.114.80:50001/'
+#export b1_jdbc_url='jdbc:sap://10.58.114.80:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
