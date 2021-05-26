@@ -9,9 +9,9 @@ export filename_p12="./cert/msteams.p12"
 export filename_key="./cert/server.key"
 export filename_cer="./cert/server.cer"
 export alias='b1op'
-export https_port="443"
-export IP_ADDR="10.58.80.110"
-export DN_NAME="pvgd56580871a.apj.global.corp.sap"
+export https_port="8443"
+export IP_ADDR="127.0.0.1"
+export DN_NAME="pvgd34362085a.apj.global.corp.sap"
 
 folder_create()
 {
@@ -52,8 +52,13 @@ rubbish_clean()
 #step 1
 folder_create
 #step 2
-key_cert_gen
-#step 3
-format_convert
+if [[ -e $filename_p12 ]]
+then
+	echo "$filename_p12 exist, doesn't generate"
+else
+	echo "$filename_p12 does not exist, generate new cert"
+	key_cert_gen
+	format_convert
+fi
 #step 4
 rubbish_clean
