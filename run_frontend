@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# put the script in /WebClient/startup/ 
+#set -x
+
+source ./env
+node ../node/server/webx

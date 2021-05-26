@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#set -x
+echo "create key&cert and handle https issue"
+
+export folder_name="./cert"
+export store_pwd="123456"
+export filename_req="./cert/req.pem"
+export filename_p12="./cert/msteams.p12"
+export filename_key="./cert/server.key"
+export filename_cer="./cert/server.cer"
+export alias='b1op'
+export https_port="443"
+export IP_ADDR="10.58.80.110"
+export DN_NAME="pvgd56580871a.apj.global.corp.sap"
+
+folder_create()
+{
+	if [[ ! -d $folder_name ]]
+	then
+		mkdir $folder_name
+	fi
+}
+
+key_cert_gen()
+{
+	local dname="CN=localhost,OU=localhost,O=B1,L=L1,ST=SH,C=CN"
+	local ext="SAN=DNS:localhost,IP:127.0.0.1"
+
+	#from haisheng
+	#keytool -genkey -alias $alias -keyalg RSA -dname $dname -keysize 2048 -storepass $store_pwd -keypass $store_pwd -storetype PKCS12 -keystore $filename_p12 -validity 3650 -ext $ext
+	#keytool -certreq -alias $alias -file $filename_req -keystore $filename_p12 -rfc -storepass $store_pwd -ext $ext
+	#keytool -exportcert -alias $alias -file $filename_req -keystore $filename_p12 -rfc -storepass $store_pwd -ext $ext
+	
+	keytool -genkeypair -alias $alias -keyalg RSA -keystore $filename_p12 -storepass $store_pwd -validity 824 -storetype PKCS12 -dname "cn=$DN_NAME,ou=B1,o=SAP,c=CN" -ext "BasicConstraints=ca:true" -ext "SAN=dns:$DN_NAME,ip:$IP_ADDR" -ext ExtendedKeyUsage=serverAuth
+}
+
+format_convert()
+{
+	openssl pkcs12 -in $filename_p12 -password pass:$store_pwd -nodes -nocerts -out $filename_key
+	openssl pkcs12 -in $filename_p12 -password pass:$store_pwd -nokeys -out $filename_cer 
+}
+
+rubbish_clean()
+{
+	if [[ -e $filename_req ]]
+    then
+        rm $filename_req
+    fi
+}
+
+
+#step 1
+folder_create
+#step 2
+key_cert_gen
+#step 3
+format_convert
+#step 4
+rubbish_clean

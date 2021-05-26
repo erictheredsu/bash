@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+echo $BASH_VERSION
+set -x
+
+export folder_name="./cert"
+export store_pwd="123456"
+export filename_req="./cert/req.pem"
+export filename_p12="./cert/msteams.p12"
+export filename_key="./cert/server.key"
+export filename_cer="./cert/server.cer"
+export alias='https'
+export https_port="443"
+
+concat()
+{
+  local var=\"
+  
+  alias=$var$alias$var
+}
+
+concat
+
+echo $alias
+
+printf "java -jar gate.jar \
+	--spring.profiles.active=test \
+	--server.ssl.enabled=true \
+	--server.ssl.keyStoreType=PKCS12 \
+	--server.ssl.key-store=${filename_p12} \
+	--server.ssl.key-store-password=${store_pwd} \
+	--server.port=${https_port} \
+	--server.ssl.key-alias=$alias \
+	#>gate.txt 2>&1 & " \
+	> gate.sh
+
+./gate.sh

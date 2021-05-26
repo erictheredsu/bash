@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
 # put the script in /WebClient/startup/ 
-#set -x
+set -x
 
 source ./env
+
+source ./keygen
 
 echo "copy jar"
 declare -A array_filepath 
 array_filepath[auth]='../java/auth/target/auth-10.00.000-SNAPSHOT.jar'
 array_filepath[gate]='../java/gate/target/gate-10.00.000-SNAPSHOT.jar'
 array_filepath[tcli]='../java/tcli/tcli-web/target/tcli-web-10.00.000-SNAPSHOT.jar'
-array_filepath[noti]='../java/noti/target/noti-10.00.000-SNAPSHOT.jar'
-array_filepath[extn]='../java/extn/target/extn-10.00.000-SNAPSHOT.jar'
-array_filepath[anly]='../java/anly/thin/target/analytic-thin.jar'
+#array_filepath[noti]='../java/noti/target/noti-10.00.000-SNAPSHOT.jar'
+#array_filepath[extn]='../java/extn/target/extn-10.00.000-SNAPSHOT.jar'
+#array_filepath[anly]='../java/anly/thin/target/analytic-thin.jar'
 
 for f in "${!array_filepath[@]}"
 do
@@ -24,19 +26,27 @@ do
     fi
 done
 
-bool_exec_tcli=$1
-shift 			#set $1=$2 ,it means empty $1
-
 echo "clean exist process"
 ps -ef | grep jar | awk '{print $2}' | xargs kill -9 $1
 
 echo "run component"
 java -jar auth.jar >auth.txt 2>&1 & 
-java -jar noti.jar >noti.txt 2>&1 & 
-java -jar extn.jar >extn.txt 2>&1 & 
-java -jar anly.jar >anly.txt 2>&1 & 
+#java -jar noti.jar >noti.txt 2>&1 & 
+#java -jar extn.jar >extn.txt 2>&1 & 
+#java -jar anly.jar >anly.txt 2>&1 & 
 java -jar gate.jar --spring.profiles.active=test >gate.txt 2>&1 &
+
+#gate.jar need an alias paramter, which have double quotation, can't execute directly, so I print it to a script and run. doesn't work yet
+#printf "java -jar gate.jar \
+#	--spring.profiles.active=test \
+#	--server.ssl.enabled=true \
+#	--server.ssl.keyStoreType=PKCS12 \
+#	--server.ssl.key-store=${filename_p12} \
+#	--server.ssl.key-store-password=${store_pwd} \
+#	--server.port=${https_port} \
+#	--server.ssl.key-alias=\"$alias\" \
+#	>gate.txt 2>&1 & " > gate.sh
+#./gate.sh
+
 #java -jar tcli.jar >tcli.txt 2>&1 &
-if [ "$bool_exec_tcli" != "-n" ]; then
-	java -jar tcli.jar
-fi
+java -jar tcli.jar

@@ -1,9 +1,34 @@
 echo "set envirnoment var"
 
-export ip=10.193.84.19
-#Jina
-#export ip=10.58.114.80 
-
+#sqlserver
+export ip=10.58.80.110
 export b1_svcl_url='http://${ip}:50001/'
-export b1_jdbc_url='jdbc:sap://${ip}:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
+export b1_jdbc_url='jdbc:sqlserver://${ip}\sql2017;databaseName=master;user=sa;password=TestAutomation'
+
+#sqlserver
+#export ip=10.193.84.31
+#export b1_svcl_url='http://${ip}:50001/'
+#export b1_jdbc_url='jdbc:sqlserver://${ip};databaseName=master;user=sa;password=TestAutomation'
+
+#HANA
+#export ip=10.193.84.20
+#export b1_svcl_url='http://${ip}:50001/'
+#export b1_jdbc_url='jdbc:sap://${ip}:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
+
+#mixed , my SL env on sqlserver
+#export sql_ip=10.58.80.110\\SQL2017
+#export sl_ip=10.58.81.203
+#export b1_svcl_url='http://${sl_ip}:50001/'
+#export b1_jdbc_url='jdbc:sqlserver://${sql_ip};databaseName=master;user=sa;password=TestAutomation'
+
+
+#mixed, my SL env on HANA
+#export ip=10.193.84.20
+#export sl_ip=10.58.81.203
+#export b1_svcl_url='http://${sl_ip}:50001/'
+#export b1_jdbc_url='jdbc:sap://${ip}:30013/?databaseName=DBA&user=SYSTEM&password=Initial0'
+
+#frontend
+export b1_gate_url='http://localhost:8080'
+
 
